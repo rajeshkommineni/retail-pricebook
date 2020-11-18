@@ -110,7 +110,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"body-bg\">\r\n  <app-header [selectedTab]=\"'sites'\"></app-header>\r\n  <div class=\"above-table\">\r\n    <div class=\"table-title\">SITE MANAGEMENT</div>\r\n    <div class=\"search-field-container\">\r\n      <input class=\"form-control search-field\" placeholder=\"{{searchHelp}}\" [(ngModel)]=\"searchKeyword\" />\r\n      <mat-icon class=\"cursor-pointer\" matRipple>search</mat-icon>\r\n    </div>\r\n  </div>\r\n  <div class=\"table-container\">\r\n    <table>\r\n      <thead>\r\n        <tr>\r\n          <th>Site Number</th>\r\n          <th>Site Name</th>\r\n          <th>Health Check</th>\r\n          <th>Generate File</th>\r\n          <th>Export File</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr\r\n          *ngFor=\"let site of Sites | itemsFilter : searchKeyword : searchFields | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber}\">\r\n          <td>{{ site.siteName }}</td>\r\n          <td>{{ site.enterpriseUnitName }}</td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='getStatus(site.id)'>\r\n              {{site.checkStatus}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='generateXMLFile(site.siteName)'>\r\n              {{site.generateFile}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='exportFile(site.customAttributeSets[0])'>\r\n              {{site.ExportFile}}\r\n            </button>\r\n          </td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n  <form *ngIf=\"Sites\" class=\"pagination-wrapper\">\r\n    <pagination-controls class=\"my-pagination\" id=\"pager\" (pageChange)=\"pageChanged($event)\" maxSize=\"5\"\r\n      previousLabel=\"{{'previous'}}\" nextLabel=\"{{'next'}}\" screenReaderPaginationLabel=\"Pagination\"\r\n      screenReaderPageLabel=\"page\" screenReaderCurrentLabel=\"You're on page\">\r\n    </pagination-controls>\r\n    <div class=\"input-group input-group-sm\">\r\n      <select class=\"form-control\" name=\"pageChangedName\" [(ngModel)]=\"pageSize\">\r\n        <option>10</option>\r\n        <option>25</option>\r\n        <option>50</option>\r\n        <option>100</option>\r\n        <option>200</option>\r\n      </select>\r\n    </div>\r\n  </form>\r\n</div>\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"body-bg\">\r\n  <app-header [selectedTab]=\"'sites'\"></app-header>\r\n  <div class=\"above-table\">\r\n    <div class=\"table-title\">SITE MANAGEMENT</div>\r\n    <div class=\"search-field-container\">\r\n      <input class=\"form-control search-field\" placeholder=\"{{searchHelp}}\" [(ngModel)]=\"searchKeyword\" />\r\n      <mat-icon class=\"cursor-pointer\" matRipple>search</mat-icon>\r\n    </div>\r\n  </div>\r\n  <div class=\"table-container\">\r\n    <table>\r\n      <thead>\r\n        <tr>\r\n          <th>Site Number</th>\r\n          <th>Site Name</th>\r\n          <th>Health Check</th>\r\n          <th>Generate File</th>\r\n          <th>Export Status</th>\r\n          <th>Pending File</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr\r\n          *ngFor=\"let site of Sites | itemsFilter : searchKeyword : searchFields | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber}\">\r\n          <td>{{ site.siteName }}</td>\r\n          <td>{{ site.enterpriseUnitName }}</td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='getStatus(site.siteName)'>\r\n              {{site.checkStatus}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='generateXMLFile(site.siteName)'>\r\n              {{site.generateFile}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='exportStatus(site.siteName)'>\r\n              {{site.ExportFile}}\r\n            </button>\r\n          </td>\r\n          <td>{{ site.PendingFile }}</td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n  <form *ngIf=\"Sites\" class=\"pagination-wrapper\">\r\n    <pagination-controls class=\"my-pagination\" id=\"pager\" (pageChange)=\"pageChanged($event)\" maxSize=\"5\"\r\n      previousLabel=\"{{'previous'}}\" nextLabel=\"{{'next'}}\" screenReaderPaginationLabel=\"Pagination\"\r\n      screenReaderPageLabel=\"page\" screenReaderCurrentLabel=\"You're on page\">\r\n    </pagination-controls>\r\n    <div class=\"input-group input-group-sm\">\r\n      <select class=\"form-control\" name=\"pageChangedName\" [(ngModel)]=\"pageSize\">\r\n        <option>10</option>\r\n        <option>25</option>\r\n        <option>50</option>\r\n        <option>100</option>\r\n        <option>200</option>\r\n      </select>\r\n    </div>\r\n  </form>\r\n</div>\r\n");
 
 /***/ }),
 
@@ -750,6 +750,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm2015/router.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! papaparse */ "./node_modules/papaparse/papaparse.min.js");
 /* harmony import */ var papaparse__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../../environments/environment */ "./src/environments/environment.ts");
+
 
 
 
@@ -787,7 +789,7 @@ let DataUploadComponent = class DataUploadComponent {
         for (var i = 0; i < this.uploadedFiles.length; i++) {
             formData.append("uploads[]", this.uploadedFiles[i], this.uploadedFiles[i].name);
         }
-        this.http.post('http://localhost:3000/api/upload', formData)
+        this.http.post(_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].backendUrl + '/upload', formData)
             .subscribe((response) => {
             console.log('response received is ', response);
         });
@@ -1185,7 +1187,8 @@ let SitesComponent = class SitesComponent {
             for (let i = 0; i < lenght; i++) {
                 this.Sites[i].checkStatus = "CheckStatus";
                 this.Sites[i].generateFile = "GenerateXML";
-                this.Sites[i].ExportFile = "ExportToSite";
+                this.Sites[i].ExportFile = "CheckStatus";
+                this.Sites[i].PendingFile = "";
             }
         }).catch(error => {
             this.loaderService.dismiss();
@@ -1194,22 +1197,30 @@ let SitesComponent = class SitesComponent {
     }
     getStatus(id) {
         this.siteId = id;
-        console.log('ID-', this.siteId);
         this.loaderService.show();
-        this.bspServiceService.getSiteInformation(this.siteId, "PriceBookSiteDetails").toPromise().then(sitesModel => {
-            this.sites = sitesModel;
-            console.log('ID-', sitesModel);
-            var retstatus = JSON.parse(JSON.stringify(this.sites));
-            var lenght = this.Sites.length;
-            for (let i = 0; i < lenght; i++) {
-                if (this.Sites[i].id == id) {
-                    this.Sites[i].checkStatus = retstatus.status;
-                }
-            }
+        this.bspServiceService.getSiteOnlineStatus(id)
+            .toPromise()
+            .then(result => {
+            this.Sites.find(site => site.siteName === id).checkStatus = result.online_status;
             this.loaderService.dismiss();
         }).catch(error => {
             this.loaderService.dismiss();
-            this.helperService.openSomethingWrongDialog(error);
+            //this.helperService.openSomethingWrongDialog(error);
+        });
+        //return status;
+    }
+    exportStatus(id) {
+        this.siteId = id;
+        this.loaderService.show();
+        this.bspServiceService.getSiteOnlineStatus(id)
+            .toPromise()
+            .then(result => {
+            this.Sites.find(site => site.siteName === id).ExportFile = result.status;
+            this.Sites.find(site => site.siteName === id).PendingFile = result.pending_files;
+            this.loaderService.dismiss();
+        }).catch(error => {
+            this.loaderService.dismiss();
+            //this.helperService.openSomethingWrongDialog(error);
         });
         //return status;
     }
@@ -2388,6 +2399,11 @@ let BspServiceService = class BspServiceService {
             headers: this.helperService.getAuthorizationHeader(),
         });
     }
+    getSiteOnlineStatus(siteId) {
+        return this.httpClient.get(src_app_shared_constants__WEBPACK_IMPORTED_MODULE_4__["default"].BACKEND_API_ENDPOINTS.BSP_GET_SITE_ONLINE_STATUS + encodeURIComponent(siteId), {
+            headers: this.helperService.getAuthorizationHeader()
+        });
+    }
     getAllSiteInformation() {
         var body = {
             "criteria": {
@@ -2958,6 +2974,7 @@ __webpack_require__.r(__webpack_exports__);
         FIND_USER: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/user/signin',
         USERS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/user/users',
         BSP_GET_SITE_DETAILS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/site/sites/',
+        BSP_GET_SITE_ONLINE_STATUS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/site/siteStatus/',
         BSP_POST_SITE_DETAILS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/site/sites/find-by-criteria',
         BSP_GET_CATS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/cat/cats',
         BSP_GET_ITEMS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/cat/items',
@@ -3443,7 +3460,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const environment = {
     production: true,
-    backendUrl: 'http://localhost:3000/api'
+    backendUrl: 'https://retail-pricebook-demo.azurewebsites.net/api'
 };
 /*
  * For easier debugging in development mode, you can import the following file

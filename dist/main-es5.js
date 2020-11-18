@@ -171,7 +171,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"body-bg\">\r\n  <app-header [selectedTab]=\"'sites'\"></app-header>\r\n  <div class=\"above-table\">\r\n    <div class=\"table-title\">SITE MANAGEMENT</div>\r\n    <div class=\"search-field-container\">\r\n      <input class=\"form-control search-field\" placeholder=\"{{searchHelp}}\" [(ngModel)]=\"searchKeyword\" />\r\n      <mat-icon class=\"cursor-pointer\" matRipple>search</mat-icon>\r\n    </div>\r\n  </div>\r\n  <div class=\"table-container\">\r\n    <table>\r\n      <thead>\r\n        <tr>\r\n          <th>Site Number</th>\r\n          <th>Site Name</th>\r\n          <th>Health Check</th>\r\n          <th>Generate File</th>\r\n          <th>Export File</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr\r\n          *ngFor=\"let site of Sites | itemsFilter : searchKeyword : searchFields | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber}\">\r\n          <td>{{ site.siteName }}</td>\r\n          <td>{{ site.enterpriseUnitName }}</td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='getStatus(site.id)'>\r\n              {{site.checkStatus}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='generateXMLFile(site.siteName)'>\r\n              {{site.generateFile}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='exportFile(site.customAttributeSets[0])'>\r\n              {{site.ExportFile}}\r\n            </button>\r\n          </td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n  <form *ngIf=\"Sites\" class=\"pagination-wrapper\">\r\n    <pagination-controls class=\"my-pagination\" id=\"pager\" (pageChange)=\"pageChanged($event)\" maxSize=\"5\"\r\n      previousLabel=\"{{'previous'}}\" nextLabel=\"{{'next'}}\" screenReaderPaginationLabel=\"Pagination\"\r\n      screenReaderPageLabel=\"page\" screenReaderCurrentLabel=\"You're on page\">\r\n    </pagination-controls>\r\n    <div class=\"input-group input-group-sm\">\r\n      <select class=\"form-control\" name=\"pageChangedName\" [(ngModel)]=\"pageSize\">\r\n        <option>10</option>\r\n        <option>25</option>\r\n        <option>50</option>\r\n        <option>100</option>\r\n        <option>200</option>\r\n      </select>\r\n    </div>\r\n  </form>\r\n</div>\r\n";
+    __webpack_exports__["default"] = "<div class=\"body-bg\">\r\n  <app-header [selectedTab]=\"'sites'\"></app-header>\r\n  <div class=\"above-table\">\r\n    <div class=\"table-title\">SITE MANAGEMENT</div>\r\n    <div class=\"search-field-container\">\r\n      <input class=\"form-control search-field\" placeholder=\"{{searchHelp}}\" [(ngModel)]=\"searchKeyword\" />\r\n      <mat-icon class=\"cursor-pointer\" matRipple>search</mat-icon>\r\n    </div>\r\n  </div>\r\n  <div class=\"table-container\">\r\n    <table>\r\n      <thead>\r\n        <tr>\r\n          <th>Site Number</th>\r\n          <th>Site Name</th>\r\n          <th>Health Check</th>\r\n          <th>Generate File</th>\r\n          <th>Export Status</th>\r\n          <th>Pending File</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr\r\n          *ngFor=\"let site of Sites | itemsFilter : searchKeyword : searchFields | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber}\">\r\n          <td>{{ site.siteName }}</td>\r\n          <td>{{ site.enterpriseUnitName }}</td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='getStatus(site.siteName)'>\r\n              {{site.checkStatus}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='generateXMLFile(site.siteName)'>\r\n              {{site.generateFile}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='exportStatus(site.siteName)'>\r\n              {{site.ExportFile}}\r\n            </button>\r\n          </td>\r\n          <td>{{ site.PendingFile }}</td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n  <form *ngIf=\"Sites\" class=\"pagination-wrapper\">\r\n    <pagination-controls class=\"my-pagination\" id=\"pager\" (pageChange)=\"pageChanged($event)\" maxSize=\"5\"\r\n      previousLabel=\"{{'previous'}}\" nextLabel=\"{{'next'}}\" screenReaderPaginationLabel=\"Pagination\"\r\n      screenReaderPageLabel=\"page\" screenReaderCurrentLabel=\"You're on page\">\r\n    </pagination-controls>\r\n    <div class=\"input-group input-group-sm\">\r\n      <select class=\"form-control\" name=\"pageChangedName\" [(ngModel)]=\"pageSize\">\r\n        <option>10</option>\r\n        <option>25</option>\r\n        <option>50</option>\r\n        <option>100</option>\r\n        <option>200</option>\r\n      </select>\r\n    </div>\r\n  </form>\r\n</div>\r\n";
     /***/
   },
 
@@ -1479,6 +1479,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
     var papaparse__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(papaparse__WEBPACK_IMPORTED_MODULE_4__);
+    /* harmony import */
+
+
+    var _environments_environment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(
+    /*! ../../../environments/environment */
+    "./src/environments/environment.ts");
 
     var DataUploadComponent = /*#__PURE__*/function () {
       function DataUploadComponent(router, http) {
@@ -1531,7 +1537,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             formData.append("uploads[]", this.uploadedFiles[i], this.uploadedFiles[i].name);
           }
 
-          this.http.post('http://localhost:3000/api/upload', formData).subscribe(function (response) {
+          this.http.post(_environments_environment__WEBPACK_IMPORTED_MODULE_5__["environment"].backendUrl + '/upload', formData).subscribe(function (response) {
             console.log('response received is ', response);
           });
         }
@@ -2193,7 +2199,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             for (var i = 0; i < lenght; i++) {
               _this4.Sites[i].checkStatus = "CheckStatus";
               _this4.Sites[i].generateFile = "GenerateXML";
-              _this4.Sites[i].ExportFile = "ExportToSite";
+              _this4.Sites[i].ExportFile = "CheckStatus";
+              _this4.Sites[i].PendingFile = "";
             }
           })["catch"](function (error) {
             _this4.loaderService.dismiss();
@@ -2207,48 +2214,60 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           var _this5 = this;
 
           this.siteId = id;
-          console.log('ID-', this.siteId);
           this.loaderService.show();
-          this.bspServiceService.getSiteInformation(this.siteId, "PriceBookSiteDetails").toPromise().then(function (sitesModel) {
-            _this5.sites = sitesModel;
-            console.log('ID-', sitesModel);
-            var retstatus = JSON.parse(JSON.stringify(_this5.sites));
-            var lenght = _this5.Sites.length;
-
-            for (var i = 0; i < lenght; i++) {
-              if (_this5.Sites[i].id == id) {
-                _this5.Sites[i].checkStatus = retstatus.status;
-              }
-            }
+          this.bspServiceService.getSiteOnlineStatus(id).toPromise().then(function (result) {
+            _this5.Sites.find(function (site) {
+              return site.siteName === id;
+            }).checkStatus = result.online_status;
 
             _this5.loaderService.dismiss();
           })["catch"](function (error) {
-            _this5.loaderService.dismiss();
+            _this5.loaderService.dismiss(); //this.helperService.openSomethingWrongDialog(error);
 
-            _this5.helperService.openSomethingWrongDialog(error);
+          }); //return status;
+        }
+      }, {
+        key: "exportStatus",
+        value: function exportStatus(id) {
+          var _this6 = this;
+
+          this.siteId = id;
+          this.loaderService.show();
+          this.bspServiceService.getSiteOnlineStatus(id).toPromise().then(function (result) {
+            _this6.Sites.find(function (site) {
+              return site.siteName === id;
+            }).ExportFile = result.status;
+            _this6.Sites.find(function (site) {
+              return site.siteName === id;
+            }).PendingFile = result.pending_files;
+
+            _this6.loaderService.dismiss();
+          })["catch"](function (error) {
+            _this6.loaderService.dismiss(); //this.helperService.openSomethingWrongDialog(error);
+
           }); //return status;
         }
       }, {
         key: "generateXMLFile",
         value: function generateXMLFile(siteName) {
-          var _this6 = this;
+          var _this7 = this;
 
           console.log("Gererate File button called");
           this.bspServiceService.generateXMLForSite(siteName).toPromise().then(function (res) {
             result["filename"] = res["filename"];
             result["result"] = res["result"];
-            var lenght = _this6.Sites.length;
+            var lenght = _this7.Sites.length;
 
             for (var i = 0; i < lenght; i++) {
-              if (_this6.Sites[i].siteName == siteName) {
+              if (_this7.Sites[i].siteName == siteName) {
                 //this.Sites[i].generateFile = result.result;
-                _this6.Sites[i].generateFile = result.result;
+                _this7.Sites[i].generateFile = result.result;
               }
             }
           })["catch"](function (error) {
-            _this6.loaderService.dismiss();
+            _this7.loaderService.dismiss();
 
-            _this6.helperService.openSomethingWrongDialog(error);
+            _this7.helperService.openSomethingWrongDialog(error);
           });
         }
       }, {
@@ -2266,7 +2285,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }, {
         key: "exportFile",
         value: function exportFile(attributes) {
-          var _this7 = this;
+          var _this8 = this;
 
           var computerName = this.GetValueForTheKey(attributes.attributes, 'computername');
 
@@ -2284,17 +2303,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
           if (result["result"] == "SUCCESS") {
             this.bspServiceService.exportFileToSite(computerName, result.filename, dirname).toPromise().then(function (res) {
-              var lenght = _this7.Sites.length;
+              var lenght = _this8.Sites.length;
 
               for (var i = 0; i < lenght; i++) {
-                if (_this7.Sites[i].customAttributeSets[0].attributes[3].value == computerName) {
-                  _this7.Sites[i].ExportFile = res.result;
+                if (_this8.Sites[i].customAttributeSets[0].attributes[3].value == computerName) {
+                  _this8.Sites[i].ExportFile = res.result;
                 }
               }
             })["catch"](function (error) {
-              _this7.loaderService.dismiss();
+              _this8.loaderService.dismiss();
 
-              _this7.helperService.openSomethingWrongDialog(error);
+              _this8.helperService.openSomethingWrongDialog(error);
             });
           } else {
             var lenght = this.Sites.length;
@@ -2484,7 +2503,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }, {
         key: "GetItemsForTheCat",
         value: function GetItemsForTheCat(catId) {
-          var _this8 = this;
+          var _this9 = this;
 
           this.openEditItem = false; //update the ui
 
@@ -2493,22 +2512,22 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           this.bspServiceService.getCatItemDetails(catId).toPromise().then(function (itemModel) {
             console.log(JSON.stringify(itemModel));
 
-            _this8.loaderService.dismiss();
+            _this9.loaderService.dismiss();
 
-            _this8.items = itemModel;
-            _this8.catId = catId;
+            _this9.items = itemModel;
+            _this9.catId = catId;
 
-            _this8.stateService.setSelectedCat(_this8.catId);
+            _this9.stateService.setSelectedCat(_this9.catId);
 
-            _this8.loaderService.dismiss(); // if (itemModel.items.length > 0) {
+            _this9.loaderService.dismiss(); // if (itemModel.items.length > 0) {
             //   this.dataList = itemModel.items;
             //   //this.keys = itemModel.items.values;
             // }
 
           })["catch"](function (error) {
-            _this8.loaderService.dismiss();
+            _this9.loaderService.dismiss();
 
-            _this8.helperService.openSomethingWrongDialog(error);
+            _this9.helperService.openSomethingWrongDialog(error);
           });
         }
       }, {
@@ -2683,20 +2702,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }, {
         key: "getRetailerUsers",
         value: function getRetailerUsers() {
-          var _this9 = this;
+          var _this10 = this;
 
           this.loaderService.show();
           this.accountService.getUsers().toPromise().then(function (users) {
             console.log("users :" + JSON.stringify(users));
-            _this9.users = users.sort(function (u1, u2) {
+            _this10.users = users.sort(function (u1, u2) {
               return u1.name > u2.name ? 1 : -1;
             });
 
-            _this9.loaderService.dismiss();
+            _this10.loaderService.dismiss();
           })["catch"](function (error) {
-            _this9.loaderService.dismiss();
+            _this10.loaderService.dismiss();
 
-            _this9.helperService.openSomethingWrongDialog(error);
+            _this10.helperService.openSomethingWrongDialog(error);
           });
         }
       }, {
@@ -3548,7 +3567,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       _createClass(CustomInterceptor, [{
         key: "intercept",
         value: function intercept(request, next) {
-          var _this10 = this;
+          var _this11 = this;
 
           if (!_environments_environment__WEBPACK_IMPORTED_MODULE_3__["environment"].production) {
             return this.MockApiRequest(request);
@@ -3557,7 +3576,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           return next.handle(request).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_5__["catchError"])(function (error) {
             if (error instanceof _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpErrorResponse"]) {
               if (error.status === 401) {
-                _this10.helperService.signOut();
+                _this11.helperService.signOut();
               }
             }
 
@@ -4238,6 +4257,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         key: "getSiteInformation",
         value: function getSiteInformation(siteId, customParam) {
           return this.httpClient.get(src_app_shared_constants__WEBPACK_IMPORTED_MODULE_4__["default"].BACKEND_API_ENDPOINTS.BSP_GET_SITE_DETAILS + encodeURIComponent(siteId) + '/' + encodeURIComponent(customParam), {
+            headers: this.helperService.getAuthorizationHeader()
+          });
+        }
+      }, {
+        key: "getSiteOnlineStatus",
+        value: function getSiteOnlineStatus(siteId) {
+          return this.httpClient.get(src_app_shared_constants__WEBPACK_IMPORTED_MODULE_4__["default"].BACKEND_API_ENDPOINTS.BSP_GET_SITE_ONLINE_STATUS + encodeURIComponent(siteId), {
             headers: this.helperService.getAuthorizationHeader()
           });
         }
@@ -5072,6 +5098,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         FIND_USER: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/user/signin',
         USERS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/user/users',
         BSP_GET_SITE_DETAILS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/site/sites/',
+        BSP_GET_SITE_ONLINE_STATUS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/site/siteStatus/',
         BSP_POST_SITE_DETAILS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/site/sites/find-by-criteria',
         BSP_GET_CATS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/cat/cats',
         BSP_GET_ITEMS: _environments_environment__WEBPACK_IMPORTED_MODULE_1__["environment"].backendUrl + '/cat/items',
@@ -5161,10 +5188,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       _createClass(SomethingWrongDialogComponent, [{
         key: "ngOnInit",
         value: function ngOnInit() {
-          var _this11 = this;
+          var _this12 = this;
 
           setTimeout(function () {
-            return _this11.dialogRef.close();
+            return _this12.dialogRef.close();
           }, this.data.timeToClose);
         }
       }]);
@@ -5271,10 +5298,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       _createClass(SuccessDialogComponent, [{
         key: "ngOnInit",
         value: function ngOnInit() {
-          var _this12 = this;
+          var _this13 = this;
 
           setTimeout(function () {
-            return _this12.dialogRef.close();
+            return _this13.dialogRef.close();
           }, this.data.timeToClose);
         }
       }]);
@@ -5366,17 +5393,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     var LoaderComponent = /*#__PURE__*/function () {
       function LoaderComponent(loaderService) {
-        var _this13 = this;
+        var _this14 = this;
 
         _classCallCheck(this, LoaderComponent);
 
         this.loaderService = loaderService;
         this.shouldShow = false;
         this.loaderService.changeLoaderImage.subscribe(function (image) {
-          _this13.loaderImage = image;
+          _this14.loaderImage = image;
         });
         this.loaderService.toggleLoader.subscribe(function (show) {
-          _this13.shouldShow = show;
+          _this14.shouldShow = show;
         });
       }
 
@@ -5693,7 +5720,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       }, {
         key: "signIn",
         value: function signIn() {
-          var _this14 = this;
+          var _this15 = this;
 
           try {
             if (!this.formModel.valid) {
@@ -5705,23 +5732,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             this.accountService.signIn(this.formModel.value).toPromise().then(function (response) {
               console.log("Token :" + JSON.stringify(response));
 
-              _this14.stateService.setAccountModel(response.user);
+              _this15.stateService.setAccountModel(response.user);
 
-              _this14.stateService.setAuthorities(response.user.role.roleName);
+              _this15.stateService.setAuthorities(response.user.role.roleName);
 
-              _this14.stateService.setToken(response.token);
+              _this15.stateService.setToken(response.token);
 
-              _this14.isSignInExecuting = false;
+              _this15.isSignInExecuting = false;
 
-              _this14.goToHomepage();
+              _this15.goToHomepage();
             })["catch"](function (error) {
               console.log("Token :" + error);
 
-              _this14.loaderService.dismiss();
+              _this15.loaderService.dismiss();
 
-              _this14.isSignInExecuting = false;
+              _this15.isSignInExecuting = false;
 
-              _this14.helperService.openSomethingWrongDialog(error);
+              _this15.helperService.openSomethingWrongDialog(error);
             });
           } catch (error) {
             console.log('sign in error: ' + error);
@@ -5902,7 +5929,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     var environment = {
       production: true,
-      backendUrl: 'http://localhost:3000/api'
+      backendUrl: 'https://retail-pricebook-demo.azurewebsites.net/api'
     };
     /*
      * For easier debugging in development mode, you can import the following file
