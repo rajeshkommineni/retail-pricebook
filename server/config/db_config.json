@@ -2,7 +2,8 @@
   "development": {
     "storage": "retail_adapter_database",
     "dialect": "sqlite",
-    "logging": true
+    "logging": true,
+    "transactionType": "IMMEDIATE"
   },
   "test": {
     "username": "root",
