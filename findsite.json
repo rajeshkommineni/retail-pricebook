@@ -1,0 +1,10 @@
+{
+   "criteria": {
+      "status": "ACTIVE",
+      "customAttributeSets": [
+         {
+            "typeName": "PRICEBOOKSITEDETAILS"
+         }
+      ]
+   }
+}

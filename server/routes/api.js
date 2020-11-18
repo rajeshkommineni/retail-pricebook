@@ -3,6 +3,10 @@ const request = require('request');
 const log4js = require('log4js');
 var dateFormat = require('dateformat');
 const common = require('./common');
+var XLSX = require('xlsx');
+var path = require('path');
+
+const dbsite = require('../models/tracking');
 
 const mapApiToModel = require('../data/mapper/modelMapper.js');
 const CONSTANTS = require('../../constants.js');
@@ -23,6 +27,8 @@ var log = log4js.getLogger('api');
 var log_level = config.BASICS.LOG_LEVEL;
 log.logLevel = log_level;
 
+const SiteTracking = dbsite.models.SiteTracking;
+
 router.get('/test', async (req, res, next) => {
 	try {
 
@@ -33,6 +39,20 @@ router.get('/test', async (req, res, next) => {
 		next(e);
 	}
 });
+
+router.get('/download/:sitenumber/:filename', async(req, res, next) => {
+    var appDir = path.dirname(require.main.filename);
+    console.log("dir:" , appDir);
+
+    SiteTracking.updateSitePendingFiles(req.params.sitenumber,'Completed', '')
+    .then(result=> {
+      console.log('result-', result);
+      if(result[0] === 1 ) {
+        res.download( appDir + '/' + req.params.filename);
+      }
+    });
+});
+
 
 router.put('/sendXMLToStore', async (req, res, next) => {
   try {
@@ -68,19 +88,26 @@ router.put('/generateItemsXML/:storeId', async (req, res, next) => {
 
     console.log('API Enter: generateItemsXML');
 
-                              var filename = "E" + dateFormat(new Date(), "yyyymmdd_HHMMss_") + req.params.storeId + ".XML";
+    var filename = "E" + dateFormat(new Date(), "yyyymmdd_HHMMss_") + req.params.storeId + ".XML";
 
     generateXMLFileforStore(req.params.storeId,(result) => {
+
+      if( result.result === 'SUCCESS' ) {
+
+        var xmlFile = result.filename;
+        var xmlZip = xmlFile.replace('.XML', '.ZIP');
+        zipFile(xmlFile, xmlZip);
+        console.log('Zip-',xmlZip);
+
+        SiteTracking.updateSitePendingFiles(req.params.storeId,'Pending', xmlZip)
+        .then(result=> {
+          console.log('result-', result);
+        });
+      }
+
       console.log(result);
       res.send( result );
     });
-
-                              //generateXMLFileforItems(req.body,req.params.storeId,filename,function(result) { 
-    //  console.log('API Leaving: generateItemsXML');
-                              //            res.send( [ { "filename": filename } ] );
-
-    //});
-
                               
   } catch (e) {
     log.error(`Error :${e}`);
@@ -90,6 +117,7 @@ router.put('/generateItemsXML/:storeId', async (req, res, next) => {
 
 router.get('/cat/cats', common.authToken, async (req, res, next) => {
   try {
+
     request.get(
       common.setParams(
         CONSTANTS.METHOD_TYPES.GET,

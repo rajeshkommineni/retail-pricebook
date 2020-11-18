@@ -11,6 +11,7 @@ const config = require('./server/config/config.json');
 const app = express();
 const port = process.env.PORT || '3000';
 const db = require('./server/models');
+const dbsite = require('./server/models/tracking');
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart({
     uploadDir: './import'
@@ -48,6 +49,9 @@ var cryptojs = require('crypto-js');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use((req, res, next) => {
+    if(req.method != 'OPTIONS' ) {
+      console.log("API ", req.method, req.originalUrl, JSON.stringify(req.body) );
+    }
 	  res.header("Access-Control-Allow-Origin", "*");
 	  res.header("Access-Control-Expose-Headers", "x-total-count");
 	  res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE,PATCH");
@@ -84,7 +88,12 @@ server.listen(port, () => {
 
 db.userModelSync()
   .then(() => {})
-	.catch(err => log.error("db.userModelSync :"+err));
+  .catch(err => log.error("db.userModelSync :"+err));
+  
+
+dbsite.siteModelSync()
+  .then(() => {})
+  .catch(err => log.error("db.siteModelSync :"+err));
 
 //Data Mapper
 function readInputCSVFile() {
