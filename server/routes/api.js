@@ -40,6 +40,7 @@ router.get('/test', async (req, res, next) => {
 	}
 });
 
+/*
 router.get('/download/:sitenumber/:filename', async(req, res, next) => {
     var appDir = path.dirname(require.main.filename);
     console.log("dir:" , appDir);
@@ -52,7 +53,7 @@ router.get('/download/:sitenumber/:filename', async(req, res, next) => {
       }
     });
 });
-
+*/
 
 router.put('/sendXMLToStore', async (req, res, next) => {
   try {
@@ -82,7 +83,7 @@ router.put('/sendXMLToStore', async (req, res, next) => {
   }
 });
 
-
+/*
 router.put('/generateItemsXML/:storeId', async (req, res, next) => {
   try {
 
@@ -114,6 +115,8 @@ router.put('/generateItemsXML/:storeId', async (req, res, next) => {
     next(e);
   }
 });
+
+*/
 
 router.get('/cat/cats', common.authToken, async (req, res, next) => {
   try {

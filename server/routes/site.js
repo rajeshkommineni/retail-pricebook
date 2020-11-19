@@ -3,6 +3,9 @@ const request = require('request');
 const cryptojs = require('crypto-js');
 const log4js = require('log4js');
 var moment = require("moment");
+const fs = require('fs');
+var dateFormat = require('dateformat');
+var path = require('path');
 
 const CONSTANTS = require('../../constants.js');
 const config = require('../config/config.json');
@@ -14,6 +17,8 @@ const router = express.Router();
 const dbsite = require('../models/tracking');
 const SiteTracking = dbsite.models.SiteTracking;
 
+const generateXMLFileforStore = require('../pricebook/generateXML.js').generateXMLFileforStore;
+
 log4js.configure('./server/config/log4js.json');
 var log = log4js.getLogger('site');
 var log_level = config.LOG_LEVEL;
@@ -21,6 +26,15 @@ log.logLevel = log_level;
 const generateXMLFileforItems = require('../pricebook/generateXML.js').generateXMLFileforItems;
 const pushFileToDrive = require('../pricebook/fileTransfer.js').pushFileToDrive;
 const zipFile = require('../pricebook/zip.js');
+
+
+var siteTrackingArray = [
+	{ sitenumber:55571, updated_time:'' , status: 'Completed', pending_files: '' },
+	{ sitenumber:59947, updated_time:'' , status: 'Completed', pending_files: '' },
+	{ sitenumber:59990, updated_time:'' , status: 'Completed', pending_files: '' },
+];
+
+
 //Get the details of the site for a given enterprise/Site ID.
   router.get('/site/sites/:id', common.authToken, async (req, res, next) => {
     try {
@@ -165,7 +179,106 @@ router.post('/site/sites/find-by-criteria', common.authToken, async (req, res, n
             } catch (e) {}
 });
 
-router.get('/site/updateSiteStatus/:sitenumber', async (req, res, next) => {
+
+router.get('/site/updateSiteStatus/:sitenumber', common.authToken, async (req, res, next) => {
+	try {
+	  console.log('updateSiteStatus-',req.params.sitenumber );
+
+	  var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.sitenumber);
+      if( idx != -1 ) {
+		siteTrackingArray[idx].updated_time = new Date();
+		res.send({ status: siteTrackingArray[idx].status, pending_files: siteTrackingArray[idx].pending_files });
+	  }
+	  else {
+		res.send({ error: 'Site Not found' });
+	  }
+	} catch (e) {
+	  log.error(`Error :${e}`);
+	  next(e);
+	}
+  
+});
+
+router.get('/site/siteStatus/:siteId', common.authToken, async (req, res, next) => {
+	try { 
+
+		var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.siteId);
+		if( idx != -1 ) {
+
+			var start_date = moment(siteTrackingArray[idx].updated_time, 'YYYY-MM-DD HH:mm:ss');
+			var end_date = moment(new Date(), 'YYYY-MM-DD HH:mm:ss');
+
+			var duration = moment.duration(end_date.diff(start_date));
+			var seconds = duration.asSeconds(); 
+			var mins = duration.asMinutes(); 
+			console.log('site-', siteTrackingArray[idx].updated_time,  start_date,end_date, mins, seconds);
+
+			if( seconds < 30 ) {
+				res.send({ online_status: 'Online', status: siteTrackingArray[idx].status, pending_files: siteTrackingArray[idx].pending_files  });
+			}
+			else {
+				res.send({ online_status: 'Offline', status: siteTrackingArray[idx].status, pending_files: siteTrackingArray[idx].pending_files });
+			}
+
+		}
+		
+	} catch (e) { }
+});
+
+router.get('/download/:sitenumber/:filename', common.authToken, async(req, res, next) => {
+    var appDir = path.dirname(require.main.filename);
+	console.log("dir:" , appDir);
+	
+	var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.sitenumber);
+	if( idx != -1 ) {
+		siteTrackingArray[idx].status = 'Completed';
+		siteTrackingArray[idx].pending_files = '';
+	}
+
+	res.download( appDir + '/' + req.params.filename);
+
+});
+
+
+router.put('/generateItemsXML/:storeId', common.authToken, async (req, res, next) => {
+	try {
+  
+	  console.log('API Enter: generateItemsXML');
+  
+	  var filename = "E" + dateFormat(new Date(), "yyyymmdd_HHMMss_") + req.params.storeId + ".XML";
+  
+	  generateXMLFileforStore(req.params.storeId,(result) => {
+  
+		if( result.result === 'SUCCESS' ) {
+  
+		  var xmlFile = result.filename;
+		  var xmlZip = xmlFile.replace('.XML', '.ZIP');
+		  zipFile(xmlFile, xmlZip);
+		  fs.unlink(xmlFile, err => { console.log(err) });
+		  console.log('Zip-',xmlZip);
+		  
+		  var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.storeId);
+		  if( idx != -1 ) {
+			siteTrackingArray[idx].status = 'Pending';
+			siteTrackingArray[idx].pending_files = xmlZip;
+		  }
+		}
+  
+		console.log(result);
+		res.send( result );
+	  });
+								
+	} catch (e) {
+	  log.error(`Error :${e}`);
+	  next(e);
+	}
+});
+
+
+
+
+/*
+router.get('/site/updateSiteStatus/:sitenumber', common.authToken, async (req, res, next) => {
 	try {
 	  console.log('updateSiteStatus-',req.params.sitenumber );
 	  SiteTracking.updateSiteStatus(req.params.sitenumber)
@@ -209,5 +322,53 @@ router.get('/site/siteStatus/:siteId', common.authToken, async (req, res, next) 
 		
 	} catch (e) { }
 });
+
+router.get('/download/:sitenumber/:filename', common.authToken, async(req, res, next) => {
+    var appDir = path.dirname(require.main.filename);
+    console.log("dir:" , appDir);
+
+    SiteTracking.updateSitePendingFiles(req.params.sitenumber,'Completed', '')
+    .then(result=> {
+      console.log('result-', result);
+      if(result[0] === 1 ) {
+        res.download( appDir + '/' + req.params.filename);
+      }
+    });
+});
+
+
+router.put('/generateItemsXML/:storeId', common.authToken, async (req, res, next) => {
+	try {
+  
+	  console.log('API Enter: generateItemsXML');
+  
+	  var filename = "E" + dateFormat(new Date(), "yyyymmdd_HHMMss_") + req.params.storeId + ".XML";
+  
+	  generateXMLFileforStore(req.params.storeId,(result) => {
+  
+		if( result.result === 'SUCCESS' ) {
+  
+		  var xmlFile = result.filename;
+		  var xmlZip = xmlFile.replace('.XML', '.ZIP');
+		  zipFile(xmlFile, xmlZip);
+		  console.log('Zip-',xmlZip);
+  
+		  SiteTracking.updateSitePendingFiles(req.params.storeId,'Pending', xmlZip)
+		  .then(result=> {
+			console.log('result-', result);
+		  });
+		}
+  
+		console.log(result);
+		res.send( result );
+	  });
+								
+	} catch (e) {
+	  log.error(`Error :${e}`);
+	  next(e);
+	}
+});
+
+*/
 
 module.exports = router;
