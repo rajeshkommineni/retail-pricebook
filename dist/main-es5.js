@@ -171,7 +171,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /* harmony default export */
 
 
-    __webpack_exports__["default"] = "<div class=\"body-bg\">\r\n  <app-header [selectedTab]=\"'sites'\"></app-header>\r\n  <div class=\"above-table\">\r\n    <div class=\"table-title\">SITE MANAGEMENT</div>\r\n    <div class=\"search-field-container\">\r\n      <input class=\"form-control search-field\" placeholder=\"{{searchHelp}}\" [(ngModel)]=\"searchKeyword\" />\r\n      <mat-icon class=\"cursor-pointer\" matRipple>search</mat-icon>\r\n    </div>\r\n  </div>\r\n  <div class=\"table-container\">\r\n    <table>\r\n      <thead>\r\n        <tr>\r\n          <th>Site Number</th>\r\n          <th>Site Name</th>\r\n          <th>Health Check</th>\r\n          <th>Generate File</th>\r\n          <th>Export Status</th>\r\n          <th>Pending File</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr\r\n          *ngFor=\"let site of Sites | itemsFilter : searchKeyword : searchFields | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber}\">\r\n          <td>{{ site.siteName }}</td>\r\n          <td>{{ site.enterpriseUnitName }}</td>\r\n          <td>\r\n            <button type=\"button\" [ngClass]=\"{'green' : site.status_toggle, 'red': !site.status_toggle}\" class=\"btn btn-info\" (click)='getStatus(site.siteName)'>\r\n              {{site.checkStatus}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='generateXMLFile(site.siteName)'>\r\n              {{site.generateFile}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" [ngClass]=\"{'green' : site.export_toggle, 'red': !site.export_toggle}\" class=\"btn btn-info\" (click)='exportStatus(site.siteName)'>\r\n              {{site.ExportFile}}\r\n            </button>\r\n          </td>\r\n          <td>{{ site.PendingFile }}</td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n  <form *ngIf=\"Sites\" class=\"pagination-wrapper\">\r\n    <pagination-controls class=\"my-pagination\" id=\"pager\" (pageChange)=\"pageChanged($event)\" maxSize=\"5\"\r\n      previousLabel=\"{{'previous'}}\" nextLabel=\"{{'next'}}\" screenReaderPaginationLabel=\"Pagination\"\r\n      screenReaderPageLabel=\"page\" screenReaderCurrentLabel=\"You're on page\">\r\n    </pagination-controls>\r\n    <div class=\"input-group input-group-sm\">\r\n      <select class=\"form-control\" name=\"pageChangedName\" [(ngModel)]=\"pageSize\">\r\n        <option>10</option>\r\n        <option>25</option>\r\n        <option>50</option>\r\n        <option>100</option>\r\n        <option>200</option>\r\n      </select>\r\n    </div>\r\n  </form>\r\n</div>\r\n";
+    __webpack_exports__["default"] = "<div class=\"body-bg\">\r\n  <app-header [selectedTab]=\"'sites'\"></app-header>\r\n  <div class=\"above-table\">\r\n    <div class=\"table-title\">SITE MANAGEMENT</div>\r\n    <mat-checkbox unchecked=\"false\" (change)=\"autoRefreshChanged($event)\">Auto Refresh</mat-checkbox>\r\n    <div class=\"search-field-container\">\r\n      <input class=\"form-control search-field\" placeholder=\"{{searchHelp}}\" [(ngModel)]=\"searchKeyword\" />\r\n      <mat-icon class=\"cursor-pointer\" matRipple>search</mat-icon>\r\n    </div>\r\n  </div>\r\n  <div class=\"table-container\">\r\n    <table>\r\n      <thead>\r\n        <tr>\r\n          <th>Site Number</th>\r\n          <th>Site Name</th>\r\n          <th>Health Check</th>\r\n          <th>Generate File</th>\r\n          <th>Export Status</th>\r\n          <th>Pending File</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr\r\n          *ngFor=\"let site of Sites | itemsFilter : searchKeyword : searchFields | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber}\">\r\n          <td>{{ site.siteName }}</td>\r\n          <td>{{ site.enterpriseUnitName }}</td>\r\n          <td>\r\n            <button type=\"button\" [ngClass]=\"{ 'green': site.status_toggle == 'green' , 'red': site.status_toggle == 'red', 'brown': site.status_toggle == 'brown' }\" \r\n                    class=\"btn btn-info\" (click)='getStatus(site.siteName)'>\r\n              {{site.checkStatus}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='generateXMLFile(site.siteName)'>\r\n              {{site.generateFile}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" [ngClass]=\"{'green' : site.export_toggle == 'green', 'red': site.export_toggle == 'red', 'brown': site.export_toggle == 'brown' }\" \r\n                    class=\"btn btn-info\" (click)='exportStatus(site.siteName)'>\r\n              {{site.ExportFile}}\r\n            </button>\r\n          </td>\r\n          <td>{{ site.PendingFile }}</td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n  <form *ngIf=\"Sites\" class=\"pagination-wrapper\">\r\n    <pagination-controls class=\"my-pagination\" id=\"pager\" (pageChange)=\"pageChanged($event)\" maxSize=\"5\"\r\n      previousLabel=\"{{'previous'}}\" nextLabel=\"{{'next'}}\" screenReaderPaginationLabel=\"Pagination\"\r\n      screenReaderPageLabel=\"page\" screenReaderCurrentLabel=\"You're on page\">\r\n    </pagination-controls>\r\n    <div class=\"input-group input-group-sm\">\r\n      <select class=\"form-control\" name=\"pageChangedName\" [(ngModel)]=\"pageSize\">\r\n        <option>10</option>\r\n        <option>25</option>\r\n        <option>50</option>\r\n        <option>100</option>\r\n        <option>200</option>\r\n      </select>\r\n    </div>\r\n  </form>\r\n</div>\r\n";
     /***/
   },
 
@@ -1401,7 +1401,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     AdminMgmtModule = tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([Object(_angular_core__WEBPACK_IMPORTED_MODULE_2__["NgModule"])({
       declarations: [_admin_mgmt_component__WEBPACK_IMPORTED_MODULE_4__["AdminMgmtComponent"], _data_upload_data_upload_component__WEBPACK_IMPORTED_MODULE_5__["DataUploadComponent"], _enrolluser_enrolluser_component__WEBPACK_IMPORTED_MODULE_6__["EnrolluserComponent"], _update_items_data_update_items_data_component__WEBPACK_IMPORTED_MODULE_7__["UpdateItemsDataComponent"], _itemupdate_itemupdate_component__WEBPACK_IMPORTED_MODULE_8__["ItemupdateComponent"], _item_mgmt_item_mgmt_component__WEBPACK_IMPORTED_MODULE_17__["ItemMgmtComponent"], _sites_sites_component__WEBPACK_IMPORTED_MODULE_9__["SitesComponent"], _user_mgmt_user_mgmt_component__WEBPACK_IMPORTED_MODULE_10__["UserMgmtComponent"], _users_users_component__WEBPACK_IMPORTED_MODULE_12__["UsersComponent"], _shared_component_header_header_component__WEBPACK_IMPORTED_MODULE_11__["HeaderComponent"], _pipes_items_filter_pipe__WEBPACK_IMPORTED_MODULE_16__["ItemsFilterPipe"], _itemedit_itemedit_component__WEBPACK_IMPORTED_MODULE_18__["ItemeditComponent"]],
-      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_3__["CommonModule"], _admin_mgmt_routing_module__WEBPACK_IMPORTED_MODULE_1__["AdminMgmtRoutingModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_13__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_14__["MatIconModule"], ngx_pagination__WEBPACK_IMPORTED_MODULE_15__["NgxPaginationModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_13__["ReactiveFormsModule"]]
+      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_3__["CommonModule"], _admin_mgmt_routing_module__WEBPACK_IMPORTED_MODULE_1__["AdminMgmtRoutingModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_13__["FormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_14__["MatIconModule"], ngx_pagination__WEBPACK_IMPORTED_MODULE_15__["NgxPaginationModule"], _angular_forms__WEBPACK_IMPORTED_MODULE_13__["ReactiveFormsModule"], _angular_material__WEBPACK_IMPORTED_MODULE_14__["MatCheckboxModule"]]
     })], AdminMgmtModule);
     /***/
   },
@@ -2176,6 +2176,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.lastPage = false;
         this.totalPages = 0;
         this.totalResult = 0;
+        this.autoRefresh = false;
         this.siteId = this.route.snapshot.paramMap.get('id');
       }
 
@@ -2183,6 +2184,27 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         key: "ngOnInit",
         value: function ngOnInit() {
           this.getAllSiteInformation();
+        }
+      }, {
+        key: "autoRefreshChanged",
+        value: function autoRefreshChanged(event) {
+          this.autoRefresh = event.checked;
+          console.log('CheckBox', event.checked);
+
+          if (event.checked) {
+            this.getOnlineStatusAuto();
+          } else {
+            var lenght = this.Sites.length;
+
+            for (var i = 0; i < lenght; i++) {
+              this.Sites[i].checkStatus = "CheckStatus";
+              this.Sites[i].generateFile = "GenerateXML";
+              this.Sites[i].ExportFile = "CheckStatus";
+              this.Sites[i].PendingFile = "";
+              this.Sites[i].status_toggle = 'brown';
+              this.Sites[i].export_toggle = 'brown';
+            }
+          }
         }
       }, {
         key: "getAllSiteInformation",
@@ -2201,11 +2223,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               _this4.Sites[i].generateFile = "GenerateXML";
               _this4.Sites[i].ExportFile = "CheckStatus";
               _this4.Sites[i].PendingFile = "";
-              _this4.Sites[i].status_toggle = false;
-              _this4.Sites[i].export_toggle = true;
+              _this4.Sites[i].status_toggle = 'brown';
+              _this4.Sites[i].export_toggle = 'brown';
             }
-
-            _this4.getOnlineStatusAuto();
           })["catch"](function (error) {
             _this4.loaderService.dismiss();
 
@@ -2217,6 +2237,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         value: function getOnlineStatusAuto() {
           var _this5 = this;
 
+          if (!this.autoRefresh) {
+            return;
+          }
+
           setTimeout(function () {
             console.log('getOnlineStatusAuto');
             var length = _this5.Sites.length;
@@ -2225,20 +2249,22 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               console.log('getOnlineStatusAuto-', _this5.Sites[i].siteName);
 
               _this5.bspServiceService.getSiteOnlineStatus(_this5.Sites[i].siteName).toPromise().then(function (result) {
-                _this5.Sites[i].checkStatus = result.online_status;
-                _this5.Sites[i].ExportFile = result.status;
-                _this5.Sites[i].PendingFile = result.pending_files;
+                if (_this5.autoRefresh) {
+                  _this5.Sites[i].checkStatus = result.online_status;
+                  _this5.Sites[i].ExportFile = result.status;
+                  _this5.Sites[i].PendingFile = result.pending_files;
 
-                if (_this5.Sites[i].checkStatus == 'Online') {
-                  _this5.Sites[i].status_toggle = true;
-                } else {
-                  _this5.Sites[i].status_toggle = false;
-                }
+                  if (_this5.Sites[i].checkStatus == 'Online') {
+                    _this5.Sites[i].status_toggle = 'green';
+                  } else {
+                    _this5.Sites[i].status_toggle = 'red';
+                  }
 
-                if (_this5.Sites[i].ExportFile == 'Completed') {
-                  _this5.Sites[i].export_toggle = true;
-                } else {
-                  _this5.Sites[i].export_toggle = false;
+                  if (_this5.Sites[i].ExportFile == 'Completed') {
+                    _this5.Sites[i].export_toggle = 'green';
+                  } else {
+                    _this5.Sites[i].export_toggle = 'red';
+                  }
                 }
               })["catch"](function (error) {});
             };
@@ -2247,7 +2273,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
               _loop(i);
             }
 
-            _this5.getOnlineStatusAuto();
+            if (_this5.autoRefresh) {
+              _this5.getOnlineStatusAuto();
+            }
           }, 2000);
         }
       }, {
@@ -2261,6 +2289,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _this6.Sites.find(function (site) {
               return site.siteName === id;
             }).checkStatus = result.online_status;
+
+            if (result.online_status == 'Online') {
+              _this6.Sites.find(function (site) {
+                return site.siteName === id;
+              }).status_toggle = 'green';
+            } else {
+              _this6.Sites.find(function (site) {
+                return site.siteName === id;
+              }).status_toggle = 'red';
+            }
 
             _this6.loaderService.dismiss();
           })["catch"](function (error) {
@@ -2282,6 +2320,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             _this7.Sites.find(function (site) {
               return site.siteName === id;
             }).PendingFile = result.pending_files;
+
+            if (result.status == 'Completed') {
+              _this7.Sites.find(function (site) {
+                return site.siteName === id;
+              }).export_toggle = 'green';
+            } else {
+              _this7.Sites.find(function (site) {
+                return site.siteName === id;
+              }).export_toggle = 'red';
+            }
 
             _this7.loaderService.dismiss();
           })["catch"](function (error) {
