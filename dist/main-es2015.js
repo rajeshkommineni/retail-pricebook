@@ -3530,7 +3530,7 @@ __webpack_require__.r(__webpack_exports__);
 
 const environment = {
     production: true,
-    backendUrl: 'https://retail-pricebook-demo.azurewebsites.net/api'
+    backendUrl: 'https://ncr-pricebook-demo.azurewebsites.net/api'
     //backendUrl: 'http://localhost:3000/api'
 };
 /*
