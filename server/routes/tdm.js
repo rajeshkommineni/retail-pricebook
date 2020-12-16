@@ -45,4 +45,34 @@ router.post(
   }
 );
 
+
+router.post('/tdm/transaction-documents', common.authToken, async (req, res, next) => {
+  try {
+
+    //console.log("req.body :" + JSON.stringify(req.body));
+    request.post(
+      common.setOptions(
+        CONSTANTS.METHOD_TYPES.POST,
+        CONSTANTS.BSP.API_ENDPOINTS.TDM_SERVICE.POST_UPLOAD_TDM,
+									req.body), 
+      function (err, response, body) {
+        if (err) {
+          log.debug(`API Error :${err}`);
+          console.log(`API Error :${err}`);
+          return res.json(err);
+        }
+        log.debug(`API Response Status Code:${response.statusCode}`);
+        console.log(`API Response Status Code:${response.statusCode}`);
+        //var apiResponse = JSON.parse(body);
+        res.send(body);
+		});
+
+  } catch (e) {
+    log.error(`Error :${e}`);
+    console.log(`Error :${e}`);
+    next(e);
+  }
+});
+
+
 module.exports = router;
