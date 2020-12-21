@@ -5,11 +5,12 @@ const bodyParser = require('body-parser');
 const api = require('./server/routes/api');
 const userApi = require('./server/routes/user-api');
 const siteApi = require('./server/routes/site');
+const digitalReceiptApi = require('./server/routes/DigitalReceipt');
 const tdmApi = require('./server/routes/tdm');
 const log4js = require('log4js');
 const config = require('./server/config/config.json');
 const app = express();
-const port = process.env.PORT || '3000';
+const port = process.env.PORT || '8080';
 const db = require('./server/models');
 const dbsite = require('./server/models/tracking');
 const multipart = require('connect-multiparty');
@@ -61,8 +62,10 @@ app.use((req, res, next) => {
 app.use('/api', api);
 app.use('/api', userApi);
 app.use('/api', siteApi);
+app.use('/api', digitalReceiptApi);
 app.use('/api', tdmApi);
 app.set('port', port);
+
 
 // Point static path to dist
 app.use(express.static(path.join(__dirname, 'dist')));

@@ -44,7 +44,8 @@ var constants = {
         GET_ORDER_DETAILS: '/order/orders/',
       },
       TDM_SERVICE: {
-        POST_UPLOAD_TDM: '/transaction-document/2/transaction-documents/2',
+        POST_UPLOAD_TDM: '/transaction-document/v2/transaction-documents/',
+        POST_FIND_TDM: '/transaction-document/v2/transaction-documents/find'
       },
       SITE_SERVICE: {
         GET_SITES: '/site/sites',
@@ -52,6 +53,9 @@ var constants = {
         POST_SITE_DETAILS: '/site/sites',
         POST_SITE_FIND_BY_CRITERIA: '/site/sites/find-by-criteria'
       },
+      DIGITAL_RECEIPT_SERVICE: {
+        GET_DIGITAL_RECEIPT: '/nr1dr/receipt/images/',
+      }
     },
   },
   METHOD_TYPES: {
