@@ -6,6 +6,8 @@ const CONSTANTS = require('../../constants.js');
 const config = require('../config/config.json');
 
 const common = require('./common');
+const purchaseHistory = require('../data/pojo/purchaseHistory.js');
+const mapApiToModel = require('../data/mapper/modelMapper.js');
 
 const router = express.Router();
 
@@ -72,6 +74,60 @@ router.post('/tdm/transaction-documents', common.authToken, async (req, res, nex
     console.log(`Error :${e}`);
     next(e);
   }
+});
+
+router.post('/tdm/SaveCanonical', common.authToken, async(req, res, next)=>{
+  console.log("Upload Canonical TLOG");
+  try{
+    request.post(
+      common.setOptions(
+        CONSTANTS.METHOD_TYPES.POST,
+        CONSTANTS.BSP.API_ENDPOINTS.TDM_SERVICE.POST_UPLOAD_TDM,
+        req.body,
+        true
+      ),
+      function(e,r,body){
+        console.log(JSON.stringify(body));
+        res.json(body);
+      }
+    );
+  }catch(e){}
+});
+
+//Find transaction based on given criteria
+router.post('/tdm/findCanonical', common.authToken, async(req, res, next)=>{
+  console.log("find canonical TLOG");
+  try{
+    request.post(
+      common.setOptions(
+        CONSTANTS.METHOD_TYPES.POST,
+        CONSTANTS.BSP.API_ENDPOINTS.TDM_SERVICE.POST_FIND_TDM,
+        req.body,
+        true
+      ),
+      function(err,resp,body){
+        if (err) {
+          log.debug(`API Error :${err}`);
+          return res.json(err);
+        }
+        log.debug(`API Response Status Code:${resp.statusCode}`);
+        console.log('response body: ' ,body);
+        var apiResponse = JSON.parse(JSON.stringify(body));
+        console.log('API Response: ');
+        console.log(apiResponse);
+        var history = [];
+        for (let rec of apiResponse.pageContent) {
+          const convertedModel = mapApiToModel(
+            rec,
+            purchaseHistory.apiToHistoryMap,
+            purchaseHistory.constructor
+          );
+          history.push(convertedModel);
+        }
+        res.json(history);
+      }
+    );
+  }catch(e){}
 });
 
 
