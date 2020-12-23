@@ -6019,7 +6019,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     var environment = {
       production: true,
-      backendUrl: 'https://ncr-pricebook-demo.azurewebsites.net/api' //backendUrl: 'http://localhost:3000/api'
+      backendUrl: 'https://mobile-pos-demo.azurewebsites.net/api' //backendUrl: 'http://localhost:8080/api'
 
     };
     /*
