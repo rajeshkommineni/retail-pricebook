@@ -110,7 +110,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"body-bg\">\r\n  <app-header [selectedTab]=\"'sites'\"></app-header>\r\n  <div class=\"above-table\">\r\n    <div class=\"table-title\">SITE MANAGEMENT</div>\r\n    <mat-checkbox unchecked=\"false\" (change)=\"autoRefreshChanged($event)\">Auto Refresh</mat-checkbox>\r\n    <div class=\"search-field-container\">\r\n      <input class=\"form-control search-field\" placeholder=\"{{searchHelp}}\" [(ngModel)]=\"searchKeyword\" />\r\n      <mat-icon class=\"cursor-pointer\" matRipple>search</mat-icon>\r\n    </div>\r\n  </div>\r\n  <div class=\"table-container\">\r\n    <table>\r\n      <thead>\r\n        <tr>\r\n          <th>Site Number</th>\r\n          <th>Site Name</th>\r\n          <th>Health Check</th>\r\n          <th>Generate File</th>\r\n          <th>Export Status</th>\r\n          <th>Pending File</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr\r\n          *ngFor=\"let site of Sites | itemsFilter : searchKeyword : searchFields | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber}\">\r\n          <td>{{ site.siteName }}</td>\r\n          <td>{{ site.enterpriseUnitName }}</td>\r\n          <td>\r\n            <button type=\"button\" [ngClass]=\"{ 'green': site.status_toggle == 'green' , 'red': site.status_toggle == 'red', 'brown': site.status_toggle == 'brown' }\" \r\n                    class=\"btn btn-info\" (click)='getStatus(site.siteName)'>\r\n              {{site.checkStatus}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='generateXMLFile(site.siteName)'>\r\n              {{site.generateFile}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" [ngClass]=\"{'green' : site.export_toggle == 'green', 'red': site.export_toggle == 'red', 'brown': site.export_toggle == 'brown' }\" \r\n                    class=\"btn btn-info\" (click)='exportStatus(site.siteName)'>\r\n              {{site.ExportFile}}\r\n            </button>\r\n          </td>\r\n          <td>{{ site.PendingFile }}</td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n  <form *ngIf=\"Sites\" class=\"pagination-wrapper\">\r\n    <pagination-controls class=\"my-pagination\" id=\"pager\" (pageChange)=\"pageChanged($event)\" maxSize=\"5\"\r\n      previousLabel=\"{{'previous'}}\" nextLabel=\"{{'next'}}\" screenReaderPaginationLabel=\"Pagination\"\r\n      screenReaderPageLabel=\"page\" screenReaderCurrentLabel=\"You're on page\">\r\n    </pagination-controls>\r\n    <div class=\"input-group input-group-sm\">\r\n      <select class=\"form-control\" name=\"pageChangedName\" [(ngModel)]=\"pageSize\">\r\n        <option>10</option>\r\n        <option>25</option>\r\n        <option>50</option>\r\n        <option>100</option>\r\n        <option>200</option>\r\n      </select>\r\n    </div>\r\n  </form>\r\n</div>\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("<div class=\"body-bg\">\r\n  <app-header [selectedTab]=\"'sites'\"></app-header>\r\n  <div class=\"above-table\">\r\n    <div class=\"table-title\">SITE MANAGEMENT</div>\r\n    <mat-checkbox unchecked=\"false\" (change)=\"autoRefreshChanged($event)\" #autoRefreshCB>Auto Refresh</mat-checkbox>\r\n    <div class=\"search-field-container\">\r\n      <input class=\"form-control search-field\" placeholder=\"{{searchHelp}}\" [(ngModel)]=\"searchKeyword\" />\r\n      <mat-icon class=\"cursor-pointer\" matRipple>search</mat-icon>\r\n    </div>\r\n  </div>\r\n  <div class=\"table-container\">\r\n    <table>\r\n      <thead>\r\n        <tr>\r\n          <th>Site Number</th>\r\n          <th>Site Name</th>\r\n          <th>Health Check</th>\r\n          <th>Generate File</th>\r\n          <th>Export Status</th>\r\n          <th>Pending File</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        <tr\r\n          *ngFor=\"let site of Sites | itemsFilter : searchKeyword : searchFields | paginate: { id: 'pager', itemsPerPage: pageSize, currentPage: pageNumber}\">\r\n          <td>{{ site.siteName }}</td>\r\n          <td>{{ site.enterpriseUnitName }}</td>\r\n          <td>\r\n            <button type=\"button\" [ngClass]=\"{ 'green': site.status_toggle == 'green' , 'red': site.status_toggle == 'red', 'brown': site.status_toggle == 'brown' }\" \r\n                    class=\"btn btn-info\" (click)='getStatus(site.siteName)'>\r\n              {{site.checkStatus}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" class=\"btn btn-info\" (click)='generateXMLFile(site.siteName)'>\r\n              {{site.generateFile}}\r\n            </button>\r\n          </td>\r\n          <td>\r\n            <button type=\"button\" [ngClass]=\"{'green' : site.export_toggle == 'green', 'red': site.export_toggle == 'red', 'brown': site.export_toggle == 'brown' }\" \r\n                    class=\"btn btn-info\" (click)='exportStatus(site.siteName)'>\r\n              {{site.ExportFile}}\r\n            </button>\r\n          </td>\r\n          <td>{{ site.PendingFile }}</td>\r\n        </tr>\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n  <form *ngIf=\"Sites\" class=\"pagination-wrapper\">\r\n    <pagination-controls class=\"my-pagination\" id=\"pager\" (pageChange)=\"pageChanged($event)\" maxSize=\"5\"\r\n      previousLabel=\"{{'previous'}}\" nextLabel=\"{{'next'}}\" screenReaderPaginationLabel=\"Pagination\"\r\n      screenReaderPageLabel=\"page\" screenReaderCurrentLabel=\"You're on page\">\r\n    </pagination-controls>\r\n    <div class=\"input-group input-group-sm\">\r\n      <select class=\"form-control\" name=\"pageChangedName\" [(ngModel)]=\"pageSize\">\r\n        <option>10</option>\r\n        <option>25</option>\r\n        <option>50</option>\r\n        <option>100</option>\r\n        <option>200</option>\r\n      </select>\r\n    </div>\r\n  </form>\r\n</div>\r\n");
 
 /***/ }),
 
@@ -1156,6 +1156,7 @@ var result = [{
         "filename": '',
         "result": ''
     }];
+var autoRefresh = false;
 let SitesComponent = class SitesComponent {
     constructor(route, router, bspServiceService, loaderService, stateService, helperService, dialog) {
         this.route = route;
@@ -1173,15 +1174,19 @@ let SitesComponent = class SitesComponent {
         this.lastPage = false;
         this.totalPages = 0;
         this.totalResult = 0;
-        this.autoRefresh = false;
         this.siteId = this.route.snapshot.paramMap.get('id');
     }
     ngOnInit() {
+        console.log('ngOnInit');
+        autoRefresh = false;
         this.getAllSiteInformation();
     }
+    ngOnDestroy() {
+        autoRefresh = false;
+        console.log('ngOnDestroy');
+    }
     autoRefreshChanged(event) {
-        this.autoRefresh = event.checked;
-        console.log('CheckBox', event.checked);
+        autoRefresh = event.checked;
         if (event.checked) {
             this.getOnlineStatusAuto();
         }
@@ -1218,7 +1223,8 @@ let SitesComponent = class SitesComponent {
         });
     }
     getOnlineStatusAuto() {
-        if (!this.autoRefresh) {
+        console.log('autoRefresh-', autoRefresh);
+        if (!autoRefresh) {
             return;
         }
         setTimeout(() => {
@@ -1229,7 +1235,7 @@ let SitesComponent = class SitesComponent {
                 this.bspServiceService.getSiteOnlineStatus(this.Sites[i].siteName)
                     .toPromise()
                     .then(result => {
-                    if (this.autoRefresh) {
+                    if (autoRefresh) {
                         this.Sites[i].checkStatus = result.online_status;
                         this.Sites[i].ExportFile = result.status;
                         this.Sites[i].PendingFile = result.pending_files;
@@ -1248,10 +1254,10 @@ let SitesComponent = class SitesComponent {
                     }
                 }).catch(error => { });
             }
-            if (this.autoRefresh) {
+            if (autoRefresh) {
                 this.getOnlineStatusAuto();
             }
-        }, 2000);
+        }, 3000);
     }
     getStatus(id) {
         this.siteId = id;
