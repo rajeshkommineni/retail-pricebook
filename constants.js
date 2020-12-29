@@ -64,6 +64,13 @@ var constants = {
     DELETE: 'DELETE',
     PUT: 'PUT',
   },
+  COSMOS_DB : {
+    endpoint: "https://azurecosmosdemo.documents.azure.com:443/",
+    key: "W5v1OMJDtnTaDrIO5fzNtG9pI5HV96A1fvoa14mA9BdgaVWD9kH24mWVnZzdt9YxHBbfct10C9eRf8om2Zbx2Q==",
+    databaseId: "Tasks",
+    containerId: "SiteTracking",
+    partitionKey: { kind: "Hash", paths: ["/category"] }
+  },
 };
 
 module.exports = constants;
