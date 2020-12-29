@@ -238,7 +238,7 @@ router.get('/site/siteStatus/:siteId', common.authToken, async (req, res, next) 
 
 			console.log('site-', siteInfo[0].updated_time,  start_date,end_date, mins, seconds);
 
-			if( seconds < 19830 ) {
+			if( seconds < /*19830*/ 30 ) {
 				res.send({ online_status: 'Online', status: siteInfo[0].status, pending_files: siteInfo[0].pending_files  });
 			}
 			else {
