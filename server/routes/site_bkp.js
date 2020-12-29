@@ -7,7 +7,7 @@ const fs = require('fs');
 var dateFormat = require('dateformat');
 var path = require('path');
 
-const CONSTANTS = require('../../constants');
+const CONSTANTS = require('../../constants.js');
 const config = require('../config/config.json');
 const ping = require('ping');
 const common = require('./common');
@@ -27,19 +27,6 @@ const generateXMLFileforItems = require('../pricebook/generateXML.js').generateX
 const pushFileToDrive = require('../pricebook/fileTransfer.js').pushFileToDrive;
 const zipFile = require('../pricebook/zip.js');
 
-/* COSMOS-DB START */
-const CosmosClient = require("@azure/cosmos").CosmosClient;
-const dbContext = require("../data/databaseContext");
-
-const { endpoint, key, databaseId, containerId } = CONSTANTS.COSMOS_DB;
-
-const client = new CosmosClient({ endpoint , key });
-const database = client.database(databaseId);
-const container = database.container(containerId);
-
-/* COSMOS-DB END */
-
-
 
 var siteTrackingArray = [
 	{ sitenumber:55571, updated_time:'' , status: 'Completed', pending_files: '' },
@@ -49,92 +36,99 @@ var siteTrackingArray = [
 
 
 //Get the details of the site for a given enterprise/Site ID.
-router.get('/site/sites/:id', common.authToken, async (req, res, next) => {
-	try {
-		//console.log('in Site Site API');
-		var queryParams = '/' + req.params.id;
+  router.get('/site/sites/:id', common.authToken, async (req, res, next) => {
+    try {
+      //console.log('in Site Site API');
+     var queryParams = '/' + req.params.id;
+      request.get(
+        common.setParams(
+          CONSTANTS.METHOD_TYPES.GET,
+         CONSTANTS.BSP.API_ENDPOINTS.SITE_SERVICE.GET_SITES + queryParams
+        ),
+        function (err, response, body) {
+          //console.log('Sites: ' + JSON.stringify(response));
+          res.json(body);
+        }
+      );
+    } catch (e) {
+      log.error(`Error :${e}`);
+      next(e);
+    }
+  });
+ 
+router.get(
+	'/site/sites/:id/:pattern',
+	common.authToken,
+	async (req, res, next) => {
+	  try {
+		//console.log('in Site status API');
+		var queryParams =
+		  '/' + req.params.id + '?customAttributes=' + req.params.pattern;
 		request.get(
-		common.setParams(
+		  common.setParams(
 			CONSTANTS.METHOD_TYPES.GET,
 			CONSTANTS.BSP.API_ENDPOINTS.SITE_SERVICE.GET_SITES + queryParams
-		),
-		function (err, response, body) {
+		  ),
+		  function (err, response, body) {
+			var result = {};
+			if(body) {
+				result = JSON.parse(body);
+			}
 			//console.log('Sites: ' + JSON.stringify(response));
-			res.json(body);
-		}
-		);
-	} catch (e) {
-		log.error(`Error :${e}`);
-		next(e);
-	}
-});
- 
-router.get( '/site/sites/:id/:pattern',	common.authToken, async (req, res, next) => {
-	try {
-		//console.log('in Site status API');
-		var queryParams = '/' + req.params.id + '?customAttributes=' + req.params.pattern;
-		request.get(
-			common.setParams(
-				CONSTANTS.METHOD_TYPES.GET,
-				CONSTANTS.BSP.API_ENDPOINTS.SITE_SERVICE.GET_SITES + queryParams
-			),
-			function (err, response, body) {
-				var result = {};
-				if(body) {
-					result = JSON.parse(body);
+			var status = result.customAttributeSets;
+			//var lenght = this.Sites.length;
+			//getting the computerName for the Site
+			for(var i = 0; i<status[0].attributes.length; i++){
+				//console.log(status[0].attributes[i].value);
+				if(status[0].attributes[i].key == "computername")
+				{
+				  var host = status[0].attributes[i].value;
 				}
-				//console.log('Sites: ' + JSON.stringify(response));
-				var status = result.customAttributeSets;
-				//var lenght = this.Sites.length;
-				//getting the computerName for the Site
-				for(var i = 0; i<status[0].attributes.length; i++){
-					//console.log(status[0].attributes[i].value);
-					if(status[0].attributes[i].key == "computername")
-					{
-						var host = status[0].attributes[i].value;
-					}
-				}
-				//console.log(status);
+			}
+			//console.log(status);
 
-				//var host = status[0].attributes[3].value;
-				//console.log(host);
-				ping.sys.probe(host, function(isAlive){
-					var msg = isAlive ? 'Online' : 'Offline';
-					//console.log(msg);
-				// Assigning the status of ping in response
-				for(var i = 0; i<4 && ( msg == 'Online'); i++){
-					//console.log(status[0].attributes[i].value);
-					if(status[0].attributes[i].key == "online-offline")
-						status[0].attributes[i].value = msg;
-				}
+			//var host = status[0].attributes[3].value;
+			//console.log(host);
+			ping.sys.probe(host, function(isAlive){
+				var msg = isAlive ? 'Online' : 'Offline';
 				//console.log(msg);
-				//console.log(result) ;
+			// Assigning the status of ping in response
+			for(var i = 0; i<4 && ( msg == 'Online'); i++){
+				//console.log(status[0].attributes[i].value);
+				if(status[0].attributes[i].key == "online-offline")
+				    status[0].attributes[i].value = msg;
+			}
+			//console.log(msg);
+			//console.log(result) ;
 
-				var resbody = {
-					"Site Name": result.siteName,
-					"status": msg};
-				res.send(resbody );
-				});
-		
+			var resbody = {
+				"Site Name": result.siteName,
+				"status": msg};
+			res.send(resbody );
+			});
+			
 
-		});
-	} catch (e) {
+		  }
+		);
+	  } catch (e) {
 		log.error(`Error :${e}`);
 		next(e);
+	  }
 	}
-});
-
+  );
 router.post('/site/extensions', common.authToken, async (req, res, next) => {
 	try {
 		request.post(
-			common.setOptions(
-				CONSTANTS.METHOD_TYPES.POST,
-		  		CONSTANTS.BSP.API_ENDPOINTS.SITE_SERVICE.POST_SITE_EXTENSIONS,
-				req.body),
-		  	function (e, r, body) {
+		  common.setOptions(
+			CONSTANTS.METHOD_TYPES.POST,
+		  CONSTANTS.BSP.API_ENDPOINTS.SITE_SERVICE.POST_SITE_EXTENSIONS,
+				req.body      ),
+
+				function (e, r, body) {
 				//console.log(JSON.stringify(body));
 				res.json(body);
-     		});
+     			  }
+				);
 		} catch (e) {}
 });
 
@@ -142,64 +136,54 @@ router.post('/site/extensions', common.authToken, async (req, res, next) => {
 
 router.post('/site/sites', common.authToken, async (req, res, next) => {
 	try {
+
 		//console.log("SItes details code :" );
 		request.post(
-			common.setOptions(
-				CONSTANTS.METHOD_TYPES.POST,
-				CONSTANTS.BSP.API_ENDPOINTS.SITE_SERVICE.POST_SITE_DETAILS,
-				req.body),
-				function (e, r, body) {
-					//console.log(JSON.stringify(body));
-					res.json(body);
-		});
-	} catch (e) {}
-});
-
-
+		  common.setOptions(
+			CONSTANTS.METHOD_TYPES.POST,
+		  CONSTANTS.BSP.API_ENDPOINTS.SITE_SERVICE.POST_SITE_DETAILS,
+									  req.body),
+									  function (e, r, body) {
+										//console.log(JSON.stringify(body));
+										res.json(body);
+									  }
+									);
+								  } catch (e) {}
+								});
 router.post('/site/sites/find-by-criteria', common.authToken, async (req, res, next) => {
-	try {
-			request.post(
+		try {
+								
+				//console.log("List of Sites details" );
+			// 	req.body = {
+			// 		"criteria":{
+			// 			"status":"ACTIVE",
+			// 			 "customAttributeSets": [
+			// 				   {
+			// 					   "typeName": "PRICEBOOKSITEDETAILS"
+			// 				   }
+			// 			 ]
+			// 		}
+			//    }
+
+				
+				request.post(
 				common.setOptions(
 					CONSTANTS.METHOD_TYPES.POST,
 					CONSTANTS.BSP.API_ENDPOINTS.SITE_SERVICE.POST_SITE_FIND_BY_CRITERIA,
-					req.body),
+						req.body),
 						function (e, r, body) {
-						console.log(JSON.stringify(body));
+						//console.log(JSON.stringify(body));
 						res.json(body);
-			});
-		} catch (e) {}
+			            }
+		            );
+            } catch (e) {}
 });
 
 
 router.get('/site/updateSiteStatus/:sitenumber', common.authToken, async (req, res, next) => {
 	try {
-	  	console.log('updateSiteStatus-',req.params.sitenumber );
+	  console.log('updateSiteStatus-',req.params.sitenumber );
 
-		const querySpec = { query: "SELECT * from c where c.sitenumber =  " + req.params.sitenumber };
-
-		const { resources: siteInfo } = await container.items
-		.query(querySpec)
-		.fetchAll();
-
-		if( siteInfo.length != 0 ) {
-
-			const { id, category } = siteInfo[0];
-
-			var end_date = moment(new Date(), 'YYYY-MM-DD HH:mm:ss');
-			siteInfo[0].updated_time = end_date;
-
-			const { resource: updatedSite } = await container
-			.item(id, category)
-			.replace(siteInfo[0]);
-
-			res.send({ status: siteInfo[0].status, pending_files:siteInfo[0].pending_files });
-
-		} else {
-			res.send({ error: 'Site Not found' });
-		}
-
-
-		/*
 	  var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.sitenumber);
       if( idx != -1 ) {
 		siteTrackingArray[idx].updated_time = new Date();
@@ -208,8 +192,6 @@ router.get('/site/updateSiteStatus/:sitenumber', common.authToken, async (req, r
 	  else {
 		res.send({ error: 'Site Not found' });
 	  }
-	  */
-
 	} catch (e) {
 	  log.error(`Error :${e}`);
 	  next(e);
@@ -220,35 +202,6 @@ router.get('/site/updateSiteStatus/:sitenumber', common.authToken, async (req, r
 router.get('/site/siteStatus/:siteId', common.authToken, async (req, res, next) => {
 	try { 
 
-		const querySpec = { query: "SELECT * from c where c.sitenumber =  " + req.params.siteId };
-
-		const { resources: siteInfo } = await container.items
-		.query(querySpec)
-		.fetchAll();
-
-		if( siteInfo.length != 0 ) {
-			console.log(`${siteInfo[0].sitenumber} - ${siteInfo[0].siteName} - ${siteInfo[0].id}`);
-
-			var start_date = moment(siteInfo[0].updated_time, 'YYYY-MM-DD HH:mm:ss');
-			var end_date = moment(new Date(), 'YYYY-MM-DD HH:mm:ss');
-
-			var duration = moment.duration(end_date.diff(start_date));
-			var seconds = duration.asSeconds(); 
-			var mins = duration.asMinutes(); 
-
-			console.log('site-', siteInfo[0].updated_time,  start_date,end_date, mins, seconds);
-
-			if( seconds < 19830 ) {
-				res.send({ online_status: 'Online', status: siteInfo[0].status, pending_files: siteInfo[0].pending_files  });
-			}
-			else {
-				res.send({ online_status: 'Offline', status: siteInfo[0].status, pending_files: siteInfo[0].pending_files });
-			}
-
-		}
-
-
-		/*
 		var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.siteId);
 		if( idx != -1 ) {
 
@@ -268,7 +221,6 @@ router.get('/site/siteStatus/:siteId', common.authToken, async (req, res, next) 
 			}
 
 		}
-		*/
 		
 	} catch (e) { }
 });
@@ -276,32 +228,12 @@ router.get('/site/siteStatus/:siteId', common.authToken, async (req, res, next) 
 router.get('/download/:sitenumber/:filename', common.authToken, async(req, res, next) => {
     var appDir = path.dirname(require.main.filename);
 	console.log("dir:" , appDir);
-
-	const querySpec = { query: "SELECT * from c where c.sitenumber =  " + req.params.sitenumber };
-
-	const { resources: siteInfo } = await container.items
-	.query(querySpec)
-	.fetchAll();
-
-	if( siteInfo.length != 0 ) {
-
-		const { id, category } = siteInfo[0];
-		siteInfo[0].status = 'Completed';
-		siteInfo[0].pending_files = '';
-
-		const { resource: updatedSite } = await container
-		.item(id, category)
-		.replace(siteInfo[0]);
-
-	}
 	
-	/*
 	var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.sitenumber);
 	if( idx != -1 ) {
 		siteTrackingArray[idx].status = 'Completed';
 		siteTrackingArray[idx].pending_files = '';
 	}
-	*/
 
 	res.download( appDir + '/' + req.params.filename);
 
@@ -315,44 +247,21 @@ router.put('/generateItemsXML/:storeId', common.authToken, async (req, res, next
   
 	  var filename = "E" + dateFormat(new Date(), "yyyymmdd_HHMMss_") + req.params.storeId + ".XML";
   
-	  generateXMLFileforStore(req.params.storeId, async (result) => {
+	  generateXMLFileforStore(req.params.storeId,(result) => {
   
 		if( result.result === 'SUCCESS' ) {
   
-			var xmlFile = result.filename;
-			var xmlZip = xmlFile.replace('.XML', '.ZIP');
-			zipFile(xmlFile, xmlZip);
-			fs.unlink(xmlFile, err => { console.log(err) });
-			console.log('Zip-',xmlZip);
-
-			/*
-			var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.storeId);
-			if( idx != -1 ) {
+		  var xmlFile = result.filename;
+		  var xmlZip = xmlFile.replace('.XML', '.ZIP');
+		  zipFile(xmlFile, xmlZip);
+		  fs.unlink(xmlFile, err => { console.log(err) });
+		  console.log('Zip-',xmlZip);
+		  
+		  var idx = siteTrackingArray.findIndex(site => site.sitenumber == req.params.storeId);
+		  if( idx != -1 ) {
 			siteTrackingArray[idx].status = 'Pending';
 			siteTrackingArray[idx].pending_files = xmlZip;
-			}
-			*/
-
-			const querySpec = { query: "SELECT * from c where c.sitenumber =  " + req.params.storeId };
-
-			const { resources: siteInfo } = await container.items
-			.query(querySpec)
-			.fetchAll();
-
-			if( siteInfo.length != 0 ) {
-
-				const { id, category } = siteInfo[0];
-				siteInfo[0].status = 'Pending';
-				siteInfo[0].pending_files = xmlZip;
-
-				const { resource: updatedSite } = await container
-				.item(id, category)
-				.replace(siteInfo[0]);
-
-			}
-
-
-
+		  }
 		}
   
 		console.log(result);
